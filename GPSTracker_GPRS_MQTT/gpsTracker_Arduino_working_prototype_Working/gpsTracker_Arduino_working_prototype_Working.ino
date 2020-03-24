@@ -1,17 +1,19 @@
-#include <gsmMqtt.h>
-#include <SoftwareSerial.h>
+//using simcom SIM808 module for GSM and GPS
+//using Atmega328p microcontroller. Tested with Arduino nano.
+#include <gsmMqtt.h> //mqtt client library
+#include <SoftwareSerial.h> 
 //#include<stdio.h>
 //#include<string.h>
 #define DEBUG true
 #define sosButton 7
 #define gpsPin 5
-SoftwareSerial mySerial(2, 3);
+SoftwareSerial mySerial(2, 3); //Sim808 UART connected to software serial pins 2,3. Tx to Rx and Rx to Tx.
 /*------------- USER INPUT --------------------------------*/
-char* deviceName = "flipGps1";
-char* mqttBroker = "52.204.21.160"; // mqtt broker ip
+char* deviceName = "flipGps1";//use a unique client name for your device
+char* mqttBroker = "52.xxx.xxx.160"; // mqtt broker ip or URL
 char* mqttPort = "1883"; //mqtt broker port
-char* mqttTopic = "flip/gsm/gps";
-String sosNum = "ATD9663984729;";
+char* mqttTopic = "flip/gsm/gps";//topic to which you want to publish
+String sosNum = "ATD9xxxxxxxx9;";
 /*---------------------------------------------------------*/
 char type[32], no1[32], no2[32], date[32], lat[32], lon[32];
 
@@ -59,7 +61,7 @@ void loop()
   sos();//make a call if button pressed.
   getgps();//Get GPS data
   String x = sendData( "AT+CGNSINF", 1000, DEBUG);
-  //+CGNSINF: 1,1,20161122182451.000,13.019292,77.686463,919.200,0.15,10.5,1,,0.9,2.0,1.8,,12,9,,,47,,
+  //+CGNSINF: 1,1,20161122182451.000,13.01xxxx,77.6xxxxx,919.200,0.15,10.5,1,,0.9,2.0,1.8,,12,9,,,47,,
   char* buf = x.c_str();
   strcpy(type, strtok(buf , ":"));
   strcpy(no1, strtok(NULL, ","));
